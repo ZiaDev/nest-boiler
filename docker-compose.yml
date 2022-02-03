@@ -1,0 +1,44 @@
+version: '3.7'
+
+services:
+  main:
+    container_name: main
+    build:
+      context: .
+      target: development
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - ${PORT}:${PORT}
+      - 9229:9229
+    command: npm run start:debug
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: ${TYPEORM_URL}
+      TYPEORM_MIGRATIONS: dist/migration/*.js
+    networks:
+      - brone
+    depends_on:
+      - postgres
+  postgres:
+    container_name: postgres
+    image: postgres:12
+    networks:
+      - brone
+    env_file:
+      - .env
+    environment:
+      POSTGRES_PASSWORD: pass
+      POSTGRES_USER: postgres
+      POSTGRES_DB: eva
+      PG_DATA: /var/lib/postgresql/data
+    ports:
+      - 5434:5432
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+networks:
+  brone:
+volumes:
+  pgdata:
