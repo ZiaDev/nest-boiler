@@ -9,6 +9,7 @@ export class AppController {
   @ApiOperation({description:'Hello World'})
   @Get()
   getHello(): string {
+    console.log('aaaabcsds');
     return this.appService.getHello();
   }
 }
